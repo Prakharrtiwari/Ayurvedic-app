@@ -1,0 +1,1311 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
+
+:root {
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Aesthetic Light Matcha / Celadon / Pale Sage Palette (Soft, Ethereal, Luxury Botanical) */
+  --bg-main: #f7faf8;
+  --bg-main-gradient: radial-gradient(circle at 50% 0%, #ffffff 0%, #f7faf8 50%, #edf6f1 100%);
+  
+  /* User Screenshot 1 Botanical Earth Palette (Circles Focus) */
+  --palette-cream: #E6D7B9;
+  --palette-cream-light: #F8F4EC;
+  --palette-sage: #8D9B8C;
+  --palette-sage-light: #EDF2EE;
+  --palette-ochre: #948452;
+  --palette-ochre-light: #F6F0E2;
+  --palette-leaf: #5E7247;
+  --palette-leaf-hover: #4E6038;
+  --palette-cypress: #283125;
+  --palette-cypress-dark: #1E251C;
+
+  /* Primary Natural Aesthetic Matcha Green */
+  --color-primary: #5E7247;
+  --color-primary-hover: #4E6038;
+  --color-primary-dark: #283125;
+  --color-primary-light: #EDF2EE;
+  
+  /* Aesthetic Sage Green Accents */
+  --color-sage: #8D9B8C;
+  --color-sage-hover: #768475;
+  --color-sage-light: #EDF2EE;
+  
+  /* Gentle Charcoal-Forest Text (Soft, Not harsh black) */
+  --color-text-main: #283125;
+  --color-text-muted: #5E6D5B;
+  --color-text-sub: #8D9B8C;
+  
+  --highlight-pill: #E6D7B9;
+  --search-pill-bg: #F8F4EC;
+  
+  /* Open Editorial Lines rather than heavy box shadows */
+  --border-delicate: rgba(94, 114, 71, 0.14);
+  --border-light: rgba(94, 114, 71, 0.22);
+  
+  --radius-pill: 9999px;
+  --radius-sharp: 4px; /* Sharp architectural borders on inputs */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+/* Disappear hint / placeholder text immediately when clicked or focused */
+input:focus::placeholder,
+textarea:focus::placeholder {
+  color: transparent !important;
+  opacity: 0 !important;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-main-gradient);
+  color: var(--color-text-main);
+  min-height: 100vh;
+  line-height: 1.65;
+  overflow-x: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Delicate Ambient Nature Lighting */
+body::before {
+  content: '';
+  position: fixed;
+  top: -100px;
+  left: -120px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(162, 222, 174, 0.18) 0%, rgba(245, 250, 247, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -150px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(110, 163, 67, 0.08) 0%, rgba(245, 250, 247, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--color-text-main);
+  line-height: 1.25;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Circular search fields & normal search pills */
+input[type="search"],
+.search-pill-input,
+.search-input {
+  border-radius: var(--radius-pill);
+  border: 1px solid #c8ded0;
+  background-color: #ffffff;
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+  padding: 10px 18px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Bare input for inside-bar search fields (PREVENTS DOUBLE BORDERS) */
+.bare-input,
+.search-bar-input,
+.search-bar-wrapper input,
+.search-form input,
+div:has(> svg) > input[type="search"],
+div:has(> input[type="search"]) input {
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 6px 8px !important;
+}
+
+/* Rectangular sharp borders ONLY for form fields */
+form:not(.search-form):not(.search-bar-wrapper) input:not([type="search"]):not(.bare-input),
+form:not(.search-form):not(.search-bar-wrapper) textarea,
+form:not(.search-form):not(.search-bar-wrapper) select,
+.form-input {
+  border-radius: var(--radius-sharp);
+  border: 1px solid #c8ded0;
+  background-color: #ffffff;
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(108, 153, 85, 0.18);
+}
+
+.bare-input:focus {
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+/* Primary Pill Button */
+.btn-primary-pill {
+  background: var(--color-primary);
+  color: #ffffff;
+  padding: 12px 32px;
+  border-radius: var(--radius-pill);
+  font-size: 0.96rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px -4px rgba(108, 153, 85, 0.28);
+  transition: all 0.25s ease;
+}
+
+.btn-primary-pill:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px -4px rgba(108, 153, 85, 0.38);
+}
+
+/* Sage Accent Pill Button */
+.btn-sage-pill {
+  background: var(--color-sage);
+  color: #ffffff;
+  padding: 12px 28px;
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px -4px rgba(56, 93, 69, 0.22);
+  transition: all 0.25s ease;
+}
+
+.btn-sage-pill:hover {
+  background: var(--color-sage-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px -4px rgba(56, 93, 69, 0.3);
+}
+
+.btn-secondary-pill {
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-text-main);
+  padding: 11px 24px;
+  border-radius: var(--radius-pill);
+  font-size: 0.94rem;
+  font-weight: 500;
+  border: 1px solid rgba(108, 153, 85, 0.22);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+
+.btn-secondary-pill:hover {
+  background: #ffffff;
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -4px rgba(56, 93, 69, 0.08);
+}
+
+/* Editorial Minimal Links */
+.link-view-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-sage);
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition: gap 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+}
+
+.link-view-more:hover {
+  gap: 10px;
+  color: var(--color-primary-hover);
+}
+
+/* Hero Blob Mask for Product Image */
+.hero-blob-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 530px;
+  aspect-ratio: 1.05 / 1;
+  margin: 0 auto;
+}
+
+.hero-blob-mask {
+  width: 100%;
+  height: 100%;
+  border-radius: 44% 56% 62% 38% / 46% 44% 56% 54%;
+  overflow: hidden;
+  box-shadow: 
+    0 20px 50px -15px rgba(35, 75, 50, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.9);
+  position: relative;
+  transition: border-radius 0.6s ease;
+}
+
+.hero-blob-mask:hover {
+  border-radius: 48% 52% 58% 42% / 42% 48% 52% 58%;
+}
+
+.hero-blob-mask img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transform: scale(1.02);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Zero-lag GPU Smooth Animations */
+@keyframes floatOrganic1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(0.8deg); }
+}
+
+@keyframes floatOrganic2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(9px) rotate(-0.7deg); }
+}
+
+@keyframes marqueeScroll {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes pulseRadar {
+  0% { box-shadow: 0 0 0 0 rgba(94, 114, 71, 0.5); transform: scale(1); }
+  70% { box-shadow: 0 0 0 10px rgba(94, 114, 71, 0); transform: scale(1.08); }
+  100% { box-shadow: 0 0 0 0 rgba(94, 114, 71, 0); transform: scale(1); }
+}
+
+@keyframes liveDotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.65; }
+}
+
+@keyframes ambientGlow {
+  0%, 100% { opacity: 0.16; transform: scale(1); }
+  50% { opacity: 0.28; transform: scale(1.1); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.live-pulse-dot {
+  animation: liveDotPulse 2s ease-in-out infinite;
+  display: inline-block;
+}
+
+.floating-badge {
+  will-change: transform;
+}
+
+.floating-badge-1 {
+  animation: floatOrganic1 4.5s ease-in-out infinite;
+}
+
+.floating-badge-2 {
+  animation: floatOrganic2 5.5s ease-in-out infinite 0.5s;
+}
+
+/* Micro-interaction: Smooth logo leaf rotation on hover */
+.group:hover svg {
+  transform: rotate(-3deg) scale(1.04);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.group svg {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hero Viewport Section: Sits full viewport height so Marquee naturally sticks to device bottom border on load */
+.hero-viewport-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: calc(100vh - 74px);
+  min-height: calc(100dvh - 74px);
+  overflow: hidden;
+}
+
+.hero-main-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-top: 12px;
+  padding-bottom: 20px;
+}
+
+/* Continuous Animated Marquee Ticker Ribbon */
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  display: flex;
+  background-color: var(--palette-cypress, #283125);
+  color: var(--palette-cream, #E6D7B9);
+  padding: 11px 0;
+  border-top: 1px solid rgba(230, 215, 185, 0.15);
+  border-bottom: 1px solid rgba(230, 215, 185, 0.15);
+  position: relative;
+  z-index: 10;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.marquee-content {
+  display: inline-flex;
+  gap: 36px;
+  animation: marqueeScroll 26s linear infinite;
+  will-change: transform;
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Minimal Card Design (ONLY in Programs, Doctors, and Items) */
+.minimal-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(94, 114, 71, 0.16);
+  border-radius: 12px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  will-change: transform, box-shadow;
+}
+
+.minimal-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(94, 114, 71, 0.35);
+  box-shadow: 0 14px 28px -6px rgba(40, 49, 37, 0.08);
+}
+
+/* Image Zoom on Card Hover */
+.card-img-wrapper {
+  overflow: hidden;
+  position: relative;
+}
+
+.card-img-wrapper img {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.minimal-card:hover .card-img-wrapper img {
+  transform: scale(1.06);
+}
+
+/* Interactive Card Micro-interactions (Zero Lag) */
+.interactive-card {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow;
+}
+
+.interactive-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px -6px rgba(40, 49, 37, 0.09) !important;
+}
+
+/* 2-Column Responsive Products Grid */
+.products-grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* Container */
+.container-custom {
+  width: 100%;
+  max-width: 1240px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+/* Mobile & Tablet Responsiveness */
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
+    text-align: left;
+  }
+
+  .hero-blob-wrapper {
+    max-width: 380px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .container-custom {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  /* Unstick Marquee on mobile devices to eliminate scroll lag and address bar re-flows */
+  .hero-viewport-section {
+    min-height: auto !important;
+    height: auto !important;
+    display: block !important;
+    overflow: visible !important;
+  }
+
+  .hero-main-container {
+    flex: none !important;
+    padding-top: 16px !important;
+    padding-bottom: 24px !important;
+  }
+
+  .marquee-container {
+    margin-top: 24px !important;
+    position: relative !important;
+    flex-shrink: 0 !important;
+  }
+
+  .marquee-content {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Pure White Dropdown on Mobile */
+  .pure-white-dropdown,
+  .assessment-dropdown-card,
+  .assessment-dropdown-header,
+  .assessment-dropdown-content,
+  .symptom-item-row {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+  }
+
+  /* 2 items in one row on mobile: strictly minmax(0, 1fr) with zero cut-off */
+  .products-grid-responsive {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  /* Compact card styling for mobile 2-col view */
+  .product-compact-card {
+    padding: 8px !important;
+    border-radius: 10px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .product-compact-card .product-img-box {
+    height: 120px !important;
+    margin-bottom: 6px !important;
+    border-radius: 6px !important;
+  }
+
+  .product-compact-card h3 {
+    font-size: 0.82rem !important;
+    margin: 3px 0 !important;
+    line-height: 1.25 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0 !important;
+  }
+
+  .product-compact-card .product-price {
+    font-size: 0.95rem !important;
+  }
+
+  .product-compact-card .product-bottom-bar {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 4px !important;
+    margin-top: 4px !important;
+  }
+
+  .product-compact-card .product-add-btn {
+    padding: 5px 0 !important;
+    font-size: 11px !important;
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+    border-radius: var(--radius-pill) !important;
+  }
+
+  /* Hero Section Mobile Centering (Screenshot 2: Split / Center mobile hero text) */
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+    min-height: auto !important;
+    text-align: center !important;
+  }
+
+  .hero-content-col {
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .hero-content-col h1 {
+    text-align: center !important;
+    font-size: clamp(2rem, 6.5vw, 2.8rem) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .hero-content-col p {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 92% !important;
+  }
+
+  .hero-content-col .hero-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 8px !important;
+  }
+
+  .hero-content-col .hero-actions a {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 11px 8px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 5px !important;
+  }
+
+  .hero-content-col .hero-actions a svg {
+    width: 14px !important;
+    height: 14px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .hero-content-col .hero-trust-badges {
+    justify-content: center !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  .hero-blob-wrapper {
+    max-width: 260px !important;
+    margin: 12px auto 0 auto !important;
+  }
+
+  /* Ensure floating badges stay inside screen on mobile */
+  .floating-badge {
+    padding: 5px 10px !important;
+    font-size: 10.5px !important;
+  }
+
+  .floating-badge-1 {
+    top: -6px !important;
+    right: 0px !important;
+  }
+
+  .floating-badge-2 {
+    bottom: -6px !important;
+    left: 0px !important;
+  }
+
+  /* Program cards on mobile: stack cleanly */
+  .program-card-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    padding: 14px !important;
+  }
+
+  .program-card-grid .program-img-box {
+    width: 100% !important;
+    height: 130px !important;
+  }
+
+  .program-card-grid .program-bottom-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .program-card-grid .program-bottom-bar .btn-secondary-pill {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  /* Traceability Clean Spacious Mobile Flow */
+  .traceability-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  .traceability-grid .minimal-card {
+    padding: 20px !important;
+    border-radius: 14px !important;
+  }
+
+  .heavy-metals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  @media (max-width: 480px) {
+    .heavy-metals-grid {
+      grid-template-columns: 1fr !important;
+      gap: 10px !important;
+    }
+  }
+
+  /* Navbar mobile */
+  .navbar-grid {
+    grid-template-columns: auto 1fr auto !important;
+  }
+
+  /* Product Details Page Mobile Responsive (Card-Free Clean Layout) */
+  .product-detail-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  .product-gallery-box {
+    height: 270px !important;
+  }
+}
+
+/* ==========================================================================
+   Editorial Eyebrow & Solid Dark Chips (User Customization)
+   ========================================================================== */
+
+/* Editorial Botanical Eyebrow (Replaces generic AI rounded pill bubbles) */
+.editorial-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  user-select: none;
+}
+
+.editorial-eyebrow .eyebrow-accent {
+  width: 22px;
+  height: 1.5px;
+  background-color: var(--palette-ochre, #948452);
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+.editorial-eyebrow .eyebrow-glyph {
+  font-size: 11px;
+  color: var(--palette-ochre, #948452);
+  opacity: 0.85;
+}
+
+.editorial-eyebrow .eyebrow-text {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--palette-leaf, #5E7247);
+  font-family: var(--font-heading);
+}
+
+/* Solid Dark Chips with Light Text (Replaces border-with-light-fill chips) */
+.solid-chip {
+  border: none !important;
+  outline: none !important;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.solid-chip.active,
+.solid-chip-active {
+  background-color: var(--palette-cypress, #283125) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(40, 49, 37, 0.28);
+  border: none !important;
+}
+
+.solid-chip:not(.active):not(.solid-chip-active) {
+  background-color: var(--palette-cream-light, #F8F4EC) !important;
+  color: var(--palette-cypress, #283125) !important;
+  border: none !important;
+}
+
+.solid-chip:not(.active):not(.solid-chip-active):hover {
+  background-color: var(--palette-cream, #E6D7B9) !important;
+  transform: translateY(-1px);
+}
+
+/* Animated Underline Navigation Links (Replaces chip-style hover) */
+.nav-line-link {
+  position: relative;
+  padding: 6px 2px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--palette-cypress, #283125);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-block;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.nav-line-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2.5px;
+  background-color: var(--palette-leaf, #5E7247);
+  border-radius: 9999px;
+  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1), left 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-line-link:hover {
+  color: var(--palette-leaf, #5E7247) !important;
+  background: transparent !important;
+}
+
+.nav-line-link:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+.nav-line-link.active {
+  color: var(--palette-leaf, #5E7247) !important;
+  font-weight: 700;
+  background: transparent !important;
+}
+
+.nav-line-link.active::after {
+  width: 100%;
+  left: 0;
+  background-color: var(--palette-leaf, #5E7247);
+  height: 2.5px;
+}
+
+.nav-icon-btn {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-icon-btn:hover {
+  transform: translateY(-1.5px) scale(1.06);
+  background-color: var(--palette-cream, #E6D7B9) !important;
+  color: var(--palette-cypress, #283125) !important;
+  box-shadow: 0 3px 10px rgba(40, 49, 37, 0.1);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-loader {
+  animation: spin 0.9s linear infinite !important;
+}
+
+/* =========================================================================
+   COMPREHENSIVE MOBILE RESPONSIVENESS OVERHAUL
+   Ensures 100% of website, panels, drawers, tables and buttons are responsive
+========================================================================= */
+
+/* Prevent horizontal overflow on all viewports */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Responsive Table Wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: rgba(40, 49, 37, 0.2);
+  border-radius: 9999px;
+}
+
+/* Mobile Viewport Adjustments (<= 768px) */
+@media (max-width: 768px) {
+  /* Account for fixed mobile bottom app bar */
+  body {
+    padding-bottom: 74px !important;
+  }
+
+  .container-custom {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  /* Responsive Headers */
+  h1 {
+    font-size: 1.65rem !important;
+    line-height: 1.25 !important;
+  }
+
+  h2 {
+    font-size: 1.35rem !important;
+    line-height: 1.3 !important;
+  }
+
+  h3 {
+    font-size: 1.15rem !important;
+  }
+
+  /* Responsive Buttons */
+  .btn-dark-pill,
+  .btn-secondary-pill {
+    padding: 10px 18px !important;
+    font-size: 13px !important;
+  }
+
+  /* Cards & Grid Wrapping */
+  .grid-mobile-1col {
+    grid-template-columns: 1fr !important;
+  }
+
+  .grid-mobile-2col {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* Drawers on Mobile */
+  .drawer-container {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+
+  /* Form Flex Columns */
+  .flex-mobile-col {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+
+/* ========================================================
+   UNIVERSAL MOBILE RESPONSIVENESS (ALL DASHBOARDS & SCREENS)
+   ======================================================== */
+
+/* Table Scrollability on Mobile */
+.table-responsive,
+div:has(> table) {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  max-width: 100% !important;
+}
+
+@media (max-width: 900px) {
+  /* Admin & Doctor & Farmer Sidebar Drawers */
+  .admin-sidebar-drawer,
+  .farmer-sidebar-drawer {
+    position: fixed !important;
+    left: -320px !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 275px !important;
+    max-width: 85vw !important;
+    transition: left 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.3) !important;
+    z-index: 9999 !important;
+  }
+
+  .admin-drawer-open,
+  .farmer-drawer-open {
+    left: 0 !important;
+  }
+}
+
+/* =========================================================================
+   UNIVERSAL MOBILE RESPONSIVE SYSTEM (FLIPKART / MYNTRA PARITY)
+========================================================================= */
+
+/* Desktop / Mobile Text Visibility Helpers */
+.mobile-btn-text {
+  display: none;
+}
+.desktop-btn-text {
+  display: inline;
+}
+
+/* Horizontal Ribbon Row (Flipkart / Myntra Category & Action Bar) */
+.flipkart-ribbon-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  gap: 8px !important;
+  padding: 4px 2px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.flipkart-ribbon-row::-webkit-scrollbar {
+  display: none !important;
+}
+
+.flipkart-ribbon-row > * {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* Flipkart Product Grid (2-columns on mobile, responsive auto-fill on desktop) */
+.flipkart-product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+/* Base Dashboard Header Layout */
+.dashboard-app-header {
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+
+.dashboard-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* -------------------------------------------------------------------------
+   TABLET & MOBILE BREAKPOINTS (<= 900px)
+------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  /* Sidebars: smooth off-canvas drawer */
+  .admin-sidebar-drawer,
+  .farmer-sidebar-drawer,
+  .doc-sidebar-drawer {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 275px !important;
+    max-width: 85vw !important;
+    transition: left 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.3) !important;
+    z-index: 9999 !important;
+  }
+
+  /* Hamburger toggles visible */
+  .admin-mobile-toggle,
+  .farmer-mobile-toggle,
+  .admin-mobile-menu-btn {
+    display: flex !important;
+  }
+
+  /* Headers on mobile/tablet */
+  .admin-header-bar,
+  .doc-dashboard-header,
+  .farmer-dashboard-header,
+  .dashboard-app-header {
+    height: auto !important;
+    min-height: 52px !important;
+    padding: 8px 14px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .admin-content-body,
+  .doc-dashboard-content {
+    padding: 14px 12px !important;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   MOBILE BREAKPOINTS (<= 768px)
+------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  /* Responsive Tables with Smooth Touch Scroll */
+  table {
+    min-width: 600px !important;
+  }
+
+  .table-responsive-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* Typography scale */
+  h1 { font-size: 1.2rem !important; }
+  h2 { font-size: 1.1rem !important; }
+  h3 { font-size: 1.0rem !important; }
+
+  /* Universal Header Action Buttons: never overflow */
+  .mobile-btn-text {
+    display: inline !important;
+  }
+  .desktop-btn-text {
+    display: none !important;
+  }
+
+  .dashboard-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .dashboard-action-btn {
+    padding: 6px 10px !important;
+    font-size: 11.5px !important;
+    border-radius: 8px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Modals on mobile: max 95vw */
+  div[style*="zIndex: 99999"] > div,
+  div[style*="zIndex: 9999"] > div,
+  div[style*="zIndex: 900"] > div {
+    max-width: 95vw !important;
+    width: 95vw !important;
+    padding: 16px 12px !important;
+    max-height: 92vh !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Responsive Grids: collapse to 1 or 2 columns */
+  .grid-cols-4,
+  .grid-cols-3,
+  [style*="gridTemplateColumns: 'repeat(4, 1fr)'"],
+  [style*="gridTemplateColumns: 'repeat(3, 1fr)'"],
+  [style*="gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))'"],
+  [style*="gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))'"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stat cards on mobile: clean 2-column grid */
+  [style*="gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))'"],
+  [style*="gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))'"] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* Admin Filter Bar */
+  .admin-filter-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  .admin-filter-bar > div {
+    width: 100% !important;
+    flex: none !important;
+    height: auto !important;
+    min-height: unset !important;
+  }
+  .admin-filter-bar input,
+  .admin-filter-bar select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Full-width Drawers on mobile */
+  div[class*="drawer"],
+  .drawer-container {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   COMPACT MOBILE BREAKPOINTS (<= 640px - Flipkart/Myntra Mobile App Feel)
+------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  /* Patient Header Row Stacking */
+  .patient-top-header-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .patient-search-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* 4 Action Pills in a perfect non-overflowing grid */
+  .patient-header-actions {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 6px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .patient-action-pill {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    border-radius: 9999px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .patient-action-pill span {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  /* Flipkart Product Grid: 2 clean cards per row */
+  .flipkart-product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .flipkart-product-grid > div {
+    border-radius: 12px !important;
+  }
+
+  .flipkart-product-grid img {
+    height: 120px !important;
+  }
+
+  .flipkart-product-grid h4 {
+    font-size: 0.88rem !important;
+  }
+
+  /* Header title truncate on mobile */
+  .dashboard-header-title-box {
+    min-width: 0 !important;
+    flex: 1 !important;
+  }
+
+  .dashboard-header-title {
+    font-size: 14px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin: 0 !important;
+  }
+
+  .dashboard-header-sub {
+    display: none !important;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   EXTRA-SMALL MOBILE BREAKPOINTS (<= 400px)
+------------------------------------------------------------------------- */
+@media (max-width: 400px) {
+  .dashboard-action-btn span {
+    display: none !important;
+  }
+  
+  .dashboard-action-btn {
+    padding: 6px 8px !important;
+  }
+
+  .patient-action-pill {
+    font-size: 10px !important;
+    padding: 5px 2px !important;
+  }
+
+  [style*="gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))'"],
+  [style*="gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))'"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+

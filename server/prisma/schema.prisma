@@ -1,0 +1,507 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String         @id @default(uuid())
+  name            String
+  email           String         @unique
+  phone           String         @unique
+  passwordHash    String
+  role            String         @default("PATIENT") // PATIENT, DOCTOR, FARMER, ADMIN
+  status          String         @default("PENDING") // PENDING, APPROVED, REJECTED
+  rejectionReason String?
+  avatar          String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  patientProfile  PatientProfile?
+  doctorProfile   DoctorProfile?
+  farmerProfile   FarmerProfile?
+  
+  patientConsultations Consultation[] @relation("PatientConsultations")
+  patientPrescriptions Prescription[] @relation("PatientPrescriptions")
+  orders               Order[]
+  vitalsLogs           VitalsLog[]
+  reminders            Reminder[]
+  healthAssessments    HealthAssessment[]
+  labBookings          LabBooking[]
+  communityPosts       CommunityPost[]
+  loyaltyWallet        LoyaltyWallet?
+}
+
+model PatientProfile {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  age                 Int?
+  gender              String?
+  bloodGroup          String?
+  existingConditions  String?  // JSON stringified array: ["Type 2 Diabetes", "Fatty Liver"]
+  allergies           String?
+  currentMedications  String?
+  dietType            String?  // Vegetarian, Vegan, Sattvic
+  emergencyContact    String?
+}
+
+model DoctorProfile {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  degree              String   // BHMS, BAMS, MD (Homoeopathy)
+  college             String
+  passingYear         Int
+  councilName         String   // E.g. Delhi Homoeopathic Council / Central Council of Homoeopathy (CCH) / NCH
+  registrationNumber  String   @unique
+  registrationYear    Int
+  experienceYears     Int
+  specialization      String   // JSON stringified list: ["Chronic Pain", "Skin/Psoriasis", "Metabolic"]
+  consultationFee     Float    @default(499)
+  clinicAddress       String?
+  bio                 String?
+  
+  // Document URLs / simulated secure document paths (Verified by Super Admin)
+  degreeCertUrl       String?
+  councilCertUrl      String?
+  idProofUrl          String?
+  prescriptionPadUrl  String?
+  
+  // Bank details for payout
+  bankName            String?
+  bankAccountNo       String?
+  bankIfsc            String?
+  bankHolderName      String?
+  upiId               String?
+
+  consultations       Consultation[] @relation("DoctorConsultations")
+  prescriptions       Prescription[] @relation("DoctorPrescriptions")
+}
+
+model FarmerProfile {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fpoOrFarmName       String
+  farmState           String
+  farmDistrict        String
+  farmVillage         String?
+  acreage             Float?
+  cropsGrown          String   // JSON array e.g. ["Ashwagandha", "Giloy", "Amla"]
+  
+  // Compliance & Licenses
+  fssaiNumber         String?  // 14 Digit FSSAI License/Registration
+  organicCertNumber   String?  // NPOP / Jaivik Bharat / PGS-India Certificate
+  
+  // Uploaded Compliance Documents
+  fssaiCertUrl        String?
+  organicCertUrl      String?
+  idProofUrl          String?
+  
+  // Bank details for payout
+  bankName            String?
+  bankAccountNo       String?
+  bankIfsc            String?
+  bankHolderName      String?
+  upiId               String?
+
+  batches             HerbBatch[]
+}
+
+model HerbBatch {
+  id                  String   @id @default(uuid())
+  farmerId            String
+  farmer              FarmerProfile @relation(fields: [farmerId], references: [id])
+  name                String
+  botanicalName       String?
+  category            String   // Roots, Powders, Whole Leaves, Seeds, Barks, Decoctions, Cold-Pressed Oils, Kitchen Herbs
+  batchNumber         String   @unique
+  harvestDate         DateTime
+  labReportUrl        String?
+  qrCode              String?
+  quantityKg          Float
+  soldQuantityKg      Float    @default(0)
+  pricePer100g        Float
+  imageUrl            String?
+  grade               String?  @default("AYUSH Grade-A")
+  activeCompounds     String?  // Withaferin A > 1.8%, Glycosides
+  organolepticNotes   String?  // Characteristic aroma, texture
+  rasa                String?  // Tikta, Kashaya, Madhura
+  virya               String?  // Ushna, Sheeta
+  farmLocation        String?
+  status              String   @default("IN_STOCK") // IN_STOCK, LOW_STOCK, OUT_OF_STOCK
+  isApprovedByAdmin   Boolean  @default(false)
+  createdAt           DateTime @default(now())
+}
+
+model Consultation {
+  id                  String   @id @default(uuid())
+  patientId           String
+  patient             User     @relation("PatientConsultations", fields: [patientId], references: [id])
+  doctorId            String
+  doctor              DoctorProfile @relation("DoctorConsultations", fields: [doctorId], references: [id])
+  scheduledAt         DateTime
+  timeSlot            String   // e.g. "10:30 AM - 11:00 AM"
+  mode                String   // VIDEO, AUDIO, CHAT
+  status              String   @default("CONFIRMED") // CONFIRMED, COMPLETED, CANCELLED
+  symptomsNote        String?
+  feePaid             Float
+  meetingLink         String?
+  createdAt           DateTime @default(now())
+  
+  prescription        Prescription?
+}
+
+model Prescription {
+  id                  String   @id @default(uuid())
+  consultationId      String   @unique
+  consultation        Consultation @relation(fields: [consultationId], references: [id])
+  patientId           String
+  patient             User     @relation("PatientPrescriptions", fields: [patientId], references: [id])
+  doctorId            String
+  doctor              DoctorProfile @relation("DoctorPrescriptions", fields: [doctorId], references: [id])
+  diagnosis           String
+  herbsPrescribed     String   // JSON string: [{"herb": "Giloy", "dosage": "5g morning with warm water", "duration": "30 days"}]
+  dietaryAdvice       String?
+  lifestyleGuidelines String?
+  followUpDate        DateTime?
+  createdAt           DateTime @default(now())
+}
+
+model Order {
+  id                  String   @id @default(uuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id])
+  totalAmount         Float
+  status              String   @default("CONFIRMED") // CONFIRMED, PROCESSING, DISPATCHED, DELIVERED
+  paymentMethod       String   @default("COD") // COD, UPI_QR
+  paymentStatus       String   @default("PAID") // PAID, PENDING
+  shippingAddress     String
+  trackingId          String?  // e.g. "BLU-98214912"
+  courierName         String   @default("BlueDart Express")
+  items               String   // JSON array of items
+  createdAt           DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// REAL E-COMMERCE PRODUCTS & PERSONALISED KITS
+// -------------------------------------------------------------
+model Product {
+  id                  String   @id @default(uuid())
+  name                String
+  botanicalName       String?
+  category            String   // Roots, Stems, Powders, Whole Leaves, Seeds, Kits, Oils, Honey
+  subtitle            String
+  description         String?
+  price               Float
+  originalPrice       Float
+  rating              Float    @default(4.9)
+  reviewsCount        Int      @default(120)
+  badge               String?  // Best Seller, Top Seller, Doctor Recommended
+  farmSource          String
+  harvestDate         String
+  batchNo             String
+  labReportStatus     String
+  labReportPdfUrl     String?
+  benefits            String   // JSON array: ["Reduces cortisol", "Enhances stamina"]
+  image               String
+  inStock             Boolean  @default(true)
+  doctorRecommended   Boolean  @default(true)
+  targetConditions    String   // JSON array: ["Diabetes", "Fatty Liver", "PCOS", "Thyroid"]
+  createdAt           DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// CHRONIC DISEASE PROGRAMS (30/60/90 DAYS)
+// -------------------------------------------------------------
+model DiseaseProgram {
+  id                  String   @id @default(uuid())
+  slug                String   @unique
+  title               String
+  disease             String   // Type 2 Diabetes, Fatty Liver, Thyroid, PCOS, Arthritis, Obesity
+  duration            String   // 90 Days, 60 Days, 30 Days
+  tag                 String   // Highest Success Rate, Doctor Supervised
+  rating              Float    @default(4.9)
+  patientsEnrolled    String   @default("1,840+")
+  pricePerMonth       Float
+  totalPrice          Float
+  image               String
+  description         String
+  includes            String   // JSON array of features
+  dietPlanSummary     String?
+  herbalKitSummary    String?
+  createdAt           DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// NABL HOME LAB TESTS (HbA1c, Thyroid, LFT, Lipid)
+// -------------------------------------------------------------
+model LabTest {
+  id                  String   @id @default(uuid())
+  name                String
+  category            String   // Metabolic, Liver, Thyroid, Full Body
+  turnaround          String   // Same Day 6 Hrs, 24 Hours
+  price               Float
+  originalPrice       Float
+  discount            String
+  description         String
+  parametersIncluded  String   // JSON array of biomarkers
+  fastingRequired     Boolean  @default(true)
+  sampleType          String   @default("Blood Sample (Home Collection)")
+  createdAt           DateTime @default(now())
+
+  bookings            LabBooking[]
+}
+
+model LabBooking {
+  id                  String   @id @default(uuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id])
+  labTestId           String
+  labTest             LabTest  @relation(fields: [labTestId], references: [id])
+  patientName         String
+  appointmentDate     DateTime
+  timeSlot            String
+  address             String
+  status              String   @default("CONFIRMED") // CONFIRMED, SAMPLE_COLLECTED, REPORT_READY
+  reportPdfUrl        String?
+  createdAt           DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// DAILY VITALS & HABIT TRACKING (Blood Sugar, BP, Water, Sleep)
+// -------------------------------------------------------------
+model VitalsLog {
+  id                  String   @id @default(uuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bloodSugarFasting   Float?
+  bloodSugarPP        Float?
+  bloodPressure       String?  // e.g. "120/80"
+  waterGlasses        Int      @default(0)
+  sleepHours          Float?
+  weightKg            Float?
+  symptomScore        Int?     // 1-10
+  notes               String?
+  loggedAt            DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// DAILY MEDICINE & REVERSAL REMINDERS
+// -------------------------------------------------------------
+model Reminder {
+  id                  String   @id @default(uuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title               String   // "Purified Giloy Stem Churna"
+  dosage              String   // "3g with warm water"
+  timing              String   // MORNING, AFTERNOON, BEDTIME
+  type                String   @default("HERB") // HERB, WATER, WALK, PRANAYAMA
+  isTaken             Boolean  @default(false)
+  timeOfDay           String   // e.g. "07:30 AM"
+  createdAt           DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// AI HEALTH ASSESSMENT & SYMPTOM RISK SCORE
+// -------------------------------------------------------------
+model HealthAssessment {
+  id                  String   @id @default(uuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chiefComplaint      String
+  digestionStatus     String
+  sleepStressScore    String
+  doshaAnalysis       String   // "Pitta-Kapha Aggravation"
+  riskScore           String   // "Moderate (58/100)"
+  clinicalSummary     String
+  recommendedHerbs    String   // JSON array
+  recommendedDoctor   String
+  suggestedProgram    String
+  createdAt           DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// DOCTOR-AUTHORED ARTICLES & HERB ENCYCLOPEDIA
+// -------------------------------------------------------------
+model Article {
+  id                  String   @id @default(uuid())
+  title               String
+  slug                String   @unique
+  category            String   // Herb Encyclopedia, Disease Guides, Diet & Ritucharya
+  authorDoctor        String
+  summary             String
+  content             String
+  readTime            String   @default("5 min read")
+  image               String
+  tags                String   // JSON array: ["Diabetes", "Giloy", "Detox"]
+  createdAt           DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// COMMUNITY SUPPORT GROUPS & PATIENT SUCCESS STORIES
+// -------------------------------------------------------------
+model CommunityPost {
+  id                  String   @id @default(uuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id])
+  authorName          String
+  conditionTag        String   // Diabetes Reversal, Fatty Liver, PCOS, Thyroid
+  title               String
+  content             String
+  likesCount          Int      @default(24)
+  doctorVerifiedReply String?  // Verified advice from BHMS Vaidya
+  doctorName          String?
+  createdAt           DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// SUPERCOINS & LOYALTY REWARDS WALLET
+// -------------------------------------------------------------
+model LoyaltyWallet {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balanceCoins        Int      @default(450)
+  lifetimeEarned      Int      @default(650)
+  streakDays          Int      @default(14)
+  unlockedCoupons     String   // JSON array: ["AYURVEDA10", "VAIDYA150"]
+  updatedAt           DateTime @updatedAt
+}
+
+// -------------------------------------------------------------
+// IN-APP DOCTOR-PATIENT MESSAGES
+// -------------------------------------------------------------
+model ChatMessage {
+  id           String   @id @default(uuid())
+  senderId     String
+  receiverId   String
+  senderName   String
+  senderRole   String   // PATIENT, DOCTOR
+  receiverName String?
+  receiverRole String?
+  message      String
+  createdAt    DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// SKIN CONDITION PHOTO TRACKER TIMELINE
+// -------------------------------------------------------------
+model SkinPhotoLog {
+  id          String   @id @default(uuid())
+  userId      String
+  imageUrl    String
+  condition   String   // Eczema, Psoriasis, Acne, Skin Burn
+  notes       String?
+  createdAt   DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// ADMIN PERSISTENT SYSTEM SETTINGS
+// -------------------------------------------------------------
+model SystemSetting {
+  id                 String   @id @default("singleton")
+  maintenanceMode    Boolean  @default(false)
+  platformCommission Float    @default(15)
+  doctorCommission   Float    @default(10)
+  farmerCommission   Float    @default(8)
+  codEnabled         Boolean  @default(true)
+  minPayoutAmount    Float    @default(500)
+  autoApproveDoctors Boolean  @default(false)
+  autoApproveFarmers Boolean  @default(false)
+  updatedAt          DateTime @updatedAt
+}
+
+// -------------------------------------------------------------
+// USER / FARMER / DOCTOR SUPPORT TICKETS
+// -------------------------------------------------------------
+model SupportTicket {
+  id             String    @id @default(uuid())
+  ticketNumber   String    @unique // e.g. TIK-84920
+  userId         String
+  userName       String
+  userEmail      String
+  userPhone      String?
+  userRole       String    // PATIENT, DOCTOR, FARMER
+  category       String    // PAYOUT, CONSULTATION, ORDER, TECHNICAL, PRESCRIPTION, OTHER
+  subject        String
+  description    String
+  priority       String    @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status         String    @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  adminResponse  String?
+  adminReply     String?
+  repliedBy      String?
+  repliedAt      DateTime?
+  resolvedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// -------------------------------------------------------------
+// VERIFIED PRODUCT REVIEWS
+// -------------------------------------------------------------
+model ProductReview {
+  id          String    @id @default(uuid())
+  productId   String
+  userId      String?
+  userName    String
+  userCity    String?
+  rating      Int       @default(5)
+  title       String
+  comment     String
+  replyText   String?   // Farmer or Doctor Verified Reply
+  repliedBy   String?
+  repliedAt   DateTime?
+  verified    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+}
+
+// -------------------------------------------------------------
+// CHRONIC DISEASE PROGRAM LIVE PATIENT ENROLLMENT
+// -------------------------------------------------------------
+model ProgramEnrollment {
+  id           String   @id @default(uuid())
+  userId       String
+  programSlug  String
+  programTitle String
+  durationDays Int      @default(90)
+  startDate    DateTime @default(now())
+  currentDay   Int      @default(1)
+  currentPhase String   @default("Phase 1: Deep Ama Detox")
+  status       String   @default("ACTIVE") // ACTIVE, COMPLETED, PAUSED
+  notes        String?
+  createdAt    DateTime @default(now())
+}
+
+// -------------------------------------------------------------
+// FARMER & DOCTOR FINANCIAL PAYOUT SETTLEMENT REQUESTS
+// -------------------------------------------------------------
+model PayoutRequest {
+  id             String    @id @default(uuid())
+  userId         String
+  userRole       String    // FARMER, DOCTOR
+  userName       String
+  amount         Float
+  bankName       String?
+  bankAccountNo  String?
+  bankIfsc       String?
+  status         String    @default("PENDING") // PENDING, APPROVED, SETTLED, REJECTED
+  transactionRef String?
+  requestedAt    DateTime  @default(now())
+  processedAt    DateTime?
+}
+
+// -------------------------------------------------------------
+// DYNAMIC HERBAL CATEGORIES
+// -------------------------------------------------------------
+model HerbCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  icon        String?
+  createdAt   DateTime @default(now())
+}
